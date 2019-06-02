@@ -45,8 +45,8 @@ class VIZSignature extends VIZKey {
 
   /// Construct VIZ signature from string
   factory VIZSignature.fromString(String signatureStr) {
-      Uint8List key = hex.decode(signatureStr);
-      return VIZSignature.fromBuffer(key);
+    Uint8List key = hex.decode(signatureStr);
+    return VIZSignature.fromBuffer(key);
   }
 
   /// Verify the signature of the string raw data

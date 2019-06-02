@@ -21,7 +21,7 @@ void main() {
 
   VIZSignature signature = privateKey.signString('data');
 
-  print('Signatured data: ' + signature.toString());
+  print('Signed data: ' + signature.toString());
 }
 ```
 
