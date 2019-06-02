@@ -1,7 +1,7 @@
 name: viz_dart_ecc
-description: Elliptic curve cryptography functions in Dart. Private Key, Public Key, Signature, AES, Encryption, Decryption
-version: 0.3.2
-# homepage: https://github.com/primes-network/eosdart_ecc
+description: Elliptic curve cryptography lib for VIZ based blockchain in Dart lang.
+version: 1.0.0
+homepage: https://github.com/VizTower/viz_dart_ecc
 authors:
   - primes-network <primes.ntwk@gmail.com>
   - ivanzar <https://github.com/ivanzar>
