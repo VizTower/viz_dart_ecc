@@ -1,15 +1,18 @@
-name: eosdart_ecc
+name: viz_dart_ecc
 description: Elliptic curve cryptography functions in Dart. Private Key, Public Key, Signature, AES, Encryption, Decryption
 version: 0.3.2
-homepage: https://github.com/primes-network/eosdart_ecc
-author: primes-network <primes.ntwk@gmail.com>
+# homepage: https://github.com/primes-network/eosdart_ecc
+authors:
+  - primes-network <primes.ntwk@gmail.com>
+  - ivanzar <https://github.com/ivanzar>
 
 environment:
   sdk: '>=2.0.0 <3.0.0'
 
 dependencies:
-  bs58check: ^1.0.1
+  base58check: ^1.0.1
   pointycastle: ^1.0.1
+  convert: ^2.1.1
 
 dev_dependencies:
   test: ^1.0.0

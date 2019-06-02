@@ -10,40 +10,28 @@ import './exception.dart';
 import './key_base.dart';
 import './signature.dart';
 
-/// EOS Public Key
-class EOSPublicKey extends EOSKey {
+/// VIZ Public Key
+class VIZPublicKey extends VIZKey {
+  static final PUB_KEY_PREFIX = 'VIZ';
+
   ECPoint q;
 
-  /// Construct EOS public key from buffer
-  EOSPublicKey.fromPoint(this.q);
+  /// Construct VIZ public key from buffer
+  VIZPublicKey.fromPoint(this.q);
 
-  /// Construct EOS public key from string
-  factory EOSPublicKey.fromString(String keyStr) {
-    RegExp publicRegex = RegExp(r"^PUB_([A-Za-z0-9]+)_([A-Za-z0-9]+)",
-        caseSensitive: true, multiLine: false);
-    Iterable<Match> match = publicRegex.allMatches(keyStr);
-
-    if (match.isEmpty) {
-      RegExp eosRegex = RegExp(r"^EOS", caseSensitive: true, multiLine: false);
-      if (!eosRegex.hasMatch(keyStr)) {
-        throw InvalidKey("No leading EOS");
-      }
-      String publicKeyStr = keyStr.substring(3);
-      Uint8List buffer = EOSKey.decodeKey(publicKeyStr);
-      return EOSPublicKey.fromBuffer(buffer);
-    } else if (match.length == 1) {
-      Match m = match.first;
-      String keyType = m.group(1);
-      Uint8List buffer = EOSKey.decodeKey(m.group(2), keyType);
-      return EOSPublicKey.fromBuffer(buffer);
-    } else {
-      throw InvalidKey('Invalid public key format');
+  /// Construct VIZ public key from string
+  factory VIZPublicKey.fromString(String keyStr) {
+    if (!keyStr.startsWith(PUB_KEY_PREFIX)) {
+      throw InvalidKey('A key must begin with "$PUB_KEY_PREFIX"');
     }
+    String pupKeyStr = keyStr.substring(3);
+    Uint8List keyBuf = VIZKey.decodeKey(pupKeyStr);
+    return VIZPublicKey.fromBuffer(keyBuf);
   }
 
-  factory EOSPublicKey.fromBuffer(Uint8List buffer) {
-    ECPoint point = EOSKey.secp256k1.curve.decodePoint(buffer);
-    return EOSPublicKey.fromPoint(point);
+  factory VIZPublicKey.fromBuffer(Uint8List buffer) {
+    ECPoint point = VIZKey.secp256k1.curve.decodePoint(buffer);
+    return VIZPublicKey.fromPoint(point);
   }
 
   Uint8List toBuffer() {
@@ -52,66 +40,49 @@ class EOSPublicKey extends EOSKey {
   }
 
   String toString() {
-    return 'EOS' + EOSKey.encodeKey(this.toBuffer(), keyType);
+    return PUB_KEY_PREFIX + VIZKey.encodeKey(this.toBuffer());
   }
 }
 
-/// EOS Private Key
-class EOSPrivateKey extends EOSKey {
+/// VIZ Private Key
+class VIZPrivateKey extends VIZKey {
   Uint8List d;
-  String format;
 
   BigInt _r;
   BigInt _s;
 
-  /// Constructor EOS private key from the key buffer itself
-  EOSPrivateKey.fromBuffer(this.d);
+  /// Constructor VIZ private key from the key buffer itself
+  VIZPrivateKey.fromBuffer(this.d);
 
-  /// Construct the private key from string
-  /// It can come from WIF format for PVT format
-  EOSPrivateKey.fromString(String keyStr) {
-    RegExp privateRegex = RegExp(r"^PVT_([A-Za-z0-9]+)_([A-Za-z0-9]+)",
-        caseSensitive: true, multiLine: false);
-    Iterable<Match> match = privateRegex.allMatches(keyStr);
+  /// Construct the private key from WIF string
+  VIZPrivateKey.fromString(String keyStr) {
+    // WIF
+    Uint8List keyBuf = VIZKey.decodeKey(keyStr, VIZKey.SHA256X2);
+    int version = keyBuf.first;
+    if (VIZKey.VERSION != version) {
+      throw InvalidKey('Expected version ${0x80}, instead got ${version}');
+    }
 
-    if (match.isEmpty) {
-      format = 'WIF';
-      keyType = 'K1';
-      // WIF
-      Uint8List keyWLeadingVersion = EOSKey.decodeKey(keyStr, EOSKey.SHA256X2);
-      int version = keyWLeadingVersion.first;
-      if (EOSKey.VERSION != version) {
-        throw InvalidKey("version mismatch");
-      }
+    d = keyBuf.sublist(1, keyBuf.length);
+    if (d.lengthInBytes == 33 && d.elementAt(32) == 1) {
+      // remove compression flag
+      d = d.sublist(0, 32);
+    }
 
-      d = keyWLeadingVersion.sublist(1, keyWLeadingVersion.length);
-      if (d.lengthInBytes == 33 && d.elementAt(32) == 1) {
-        // remove compression flag
-        d = d.sublist(0, 32);
-      }
-
-      if (d.lengthInBytes != 32) {
-        throw InvalidKey('Expecting 32 bytes, got ${d.length}');
-      }
-    } else if (match.length == 1) {
-      format = 'PVT';
-      Match m = match.first;
-      keyType = m.group(1);
-      d = EOSKey.decodeKey(m.group(2), keyType);
-    } else {
-      throw InvalidKey('Invalid Private Key format');
+    if (d.lengthInBytes != 32) {
+      throw InvalidKey('Expecting 32 bytes, got ${d.length}');
     }
   }
 
-  /// Generate EOS private key from seed. Please note: This is not random!
+  /// Generate VIZ private key from seed. Please note: This is not random!
   /// For the given seed, the generated key would always be the same
-  factory EOSPrivateKey.fromSeed(String seed) {
+  factory VIZPrivateKey.fromSeed(String seed) {
     Digest s = sha256.convert(utf8.encode(seed));
-    return EOSPrivateKey.fromBuffer(s.bytes);
+    return VIZPrivateKey.fromBuffer(s.bytes);
   }
 
-  /// Generate the random EOS private key
-  factory EOSPrivateKey.fromRandom() {
+  /// Generate the random VIZ private key
+  factory VIZPrivateKey.fromRandom() {
     final int randomLimit = 1 << 32;
     Random randomGenerator;
     try {
@@ -134,35 +105,42 @@ class EOSPrivateKey extends EOSKey {
     entropy.addAll(entropy3);
     Uint8List randomKey = Uint8List.fromList(entropy);
     Digest d = sha256.convert(randomKey);
-    return EOSPrivateKey.fromBuffer(d.bytes);
+    return VIZPrivateKey.fromBuffer(d.bytes);
   }
 
-  /// Check if the private key is WIF format
-  bool isWIF() => this.format == 'WIF';
+  /// Check if a private key is WIF format
+  static bool isWIF(String wif) {
+    try {
+      VIZKey.decodeKey(wif, VIZKey.SHA256X2);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
 
   /// Get the public key string from this private key
-  EOSPublicKey toEOSPublicKey() {
+  VIZPublicKey toPublicKey() {
     BigInt privateKeyNum = decodeBigInt(this.d);
-    ECPoint ecPoint = EOSKey.secp256k1.G * privateKeyNum;
+    ECPoint ecPoint = VIZKey.secp256k1.G * privateKeyNum;
 
-    return EOSPublicKey.fromPoint(ecPoint);
+    return VIZPublicKey.fromPoint(ecPoint);
   }
 
   /// Sign the bytes data using the private key
-  EOSSignature sign(Uint8List data) {
+  VIZSignature sign(Uint8List data) {
     Digest d = sha256.convert(data);
     return signHash(d.bytes);
   }
 
   /// Sign the string data using the private key
-  EOSSignature signString(String data) {
+  VIZSignature signString(String data) {
     return sign(utf8.encode(data));
   }
 
   /// Sign the SHA256 hashed data using the private key
-  EOSSignature signHash(Uint8List sha256Data) {
+  VIZSignature signHash(Uint8List sha256Data) {
     int nonce = 0;
-    BigInt n = EOSKey.secp256k1.n;
+    BigInt n = VIZKey.secp256k1.n;
     BigInt e = decodeBigInt(sha256Data);
 
     while (true) {
@@ -173,27 +151,26 @@ class EOSPrivateKey extends EOSKey {
       }
       ECSignature sig = ECSignature(_r, _s);
 
-      Uint8List der = EOSSignature.ecSigToDER(sig);
+      Uint8List der = VIZSignature.ecSigToDER(sig);
 
       int lenR = der.elementAt(3);
       int lenS = der.elementAt(5 + lenR);
       if (lenR == 32 && lenS == 32) {
-        int i = EOSSignature.calcPubKeyRecoveryParam(
-            decodeBigInt(sha256Data), sig, this.toEOSPublicKey());
+        int i = VIZSignature.calcPubKeyRecoveryParam(
+            decodeBigInt(sha256Data), sig, this.toPublicKey());
         i += 4; // compressed
         i += 27; // compact  //  24 or 27 :( forcing odd-y 2nd key candidate)
-        return EOSSignature(i, sig.r, sig.s);
+        return VIZSignature(i, sig.r, sig.s);
       }
     }
   }
 
   String toString() {
     List<int> version = List<int>();
-    version.add(EOSKey.VERSION);
-    Uint8List keyWLeadingVersion =
-        EOSKey.concat(Uint8List.fromList(version), this.d);
+    version.add(VIZKey.VERSION);
+    Uint8List keyBuf = VIZKey.concat(Uint8List.fromList(version), this.d);
 
-    return EOSKey.encodeKey(keyWLeadingVersion, EOSKey.SHA256X2);
+    return VIZKey.encodeKey(keyBuf, VIZKey.SHA256X2);
   }
 
   BigInt _deterministicGenerateK(
@@ -245,7 +222,7 @@ class EOSPrivateKey extends EOSKey {
     BigInt T = decodeBigInt(v);
     // Step H3, repeat until T is within the interval [1, n - 1]
     while (T.sign <= 0 ||
-        T.compareTo(EOSKey.secp256k1.n) >= 0 ||
+        T.compareTo(VIZKey.secp256k1.n) >= 0 ||
         !_checkSig(e, newHash, T)) {
       List<int> d3 = List.from(v)..add(0);
       k = hMacSha256.convert(d3).bytes;
@@ -261,8 +238,8 @@ class EOSPrivateKey extends EOSKey {
   }
 
   bool _checkSig(BigInt e, Uint8List hash, BigInt k) {
-    BigInt n = EOSKey.secp256k1.n;
-    ECPoint Q = EOSKey.secp256k1.G * k;
+    BigInt n = VIZKey.secp256k1.n;
+    ECPoint Q = VIZKey.secp256k1.G * k;
 
     if (Q.isInfinity) {
       return false;
@@ -273,7 +250,7 @@ class EOSPrivateKey extends EOSKey {
       return false;
     }
 
-    _s = k.modInverse(EOSKey.secp256k1.n) * (e + decodeBigInt(d) * _r) % n;
+    _s = k.modInverse(VIZKey.secp256k1.n) * (e + decodeBigInt(d) * _r) % n;
     if (_s.sign == 0) {
       return false;
     }
