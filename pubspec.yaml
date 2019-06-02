@@ -4,7 +4,7 @@ version: 1.0.0
 homepage: https://github.com/VizTower/viz_dart_ecc
 authors:
   - primes-network <primes.ntwk@gmail.com>
-  - ivanzar <https://github.com/ivanzar>
+  - ivanzar <ivanzar.developer@gmail.com>
 
 environment:
   sdk: '>=2.0.0 <3.0.0'
