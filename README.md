@@ -27,4 +27,4 @@ void main() {
 
 ## Features and bugs
 
-Please file feature requests and bugs at the [issue tracker][tracker].
+Please file feature requests and bugs at the [issue tracker](https://github.com/VizTower/viz_dart_ecc/issues).
