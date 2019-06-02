@@ -1,46 +1,30 @@
 # Elliptic curve cryptography (ECC) in Dart
 
-Elliptic curve cryptography lib for EOS based blockchain in Dart lang.
+Elliptic curve cryptography lib for VIZ based blockchain in Dart lang. Forked from [eosdart_ecc](https://github.com/primes-network/eosdart_ecc).
 
-[![Build Status](https://travis-ci.com/primes-network/eosdart_ecc.svg?branch=master)](https://travis-ci.com/primes-network/eosdart_ecc)
-
+[![Build Status](https://travis-ci.com/VizTower/viz_dart_ecc.svg?branch=master)](https://travis-ci.com/VizTower/viz_dart_ecc)
 
 ## Usage
 
 A simple usage example:
 
 ```dart
-import 'package:eosdart_ecc/eosdart_ecc.dart';
+import 'package:viz_dart_ecc/viz_dart_ecc.dart';
 
-main() {
-  // Construct the EOS private key from string
-  EOSPrivateKey privateKey = EOSPrivateKey.fromString(
-      '5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3');
+void main() {
+  VIZPrivateKey privateKey = VIZPrivateKey.fromString(
+      '5J2XSYiA62K5s9vLsXXpj9CdoGmWUnohEWnVmg8aJb8D2TYvpbW');
 
-  // Get the related EOS public key
-  EOSPublicKey publicKey = privateKey.toEOSPublicKey();
-  // Print the EOS public key
-  print(publicKey.toString());
+  VIZPublicKey publicKey = privateKey.toPublicKey();
 
-  // Going to sign the data
-  String data = 'data';
+  print('Pub key: ' + publicKey.toString());
 
-  // Sign
-  EOSSignature signature = privateKey.signString(data);
-  // Print the EOS signature
-  print(signature.toString());
+  VIZSignature signature = privateKey.signString('data');
 
-  // Verify the data using the signature
-  signature.verify(data, publicKey);
+  print('Signatured data: ' + signature.toString());
 }
 ```
 
 ## Features and bugs
 
 Please file feature requests and bugs at the [issue tracker][tracker].
-
-## References
-
-eosjs-ecc: https://github.com/EOSIO/eosjs-ecc
-
-[tracker]: https://github.com/primes-network/eosdart_ecc/issues
