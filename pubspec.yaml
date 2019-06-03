@@ -3,7 +3,6 @@ description: Elliptic curve cryptography lib for VIZ based blockchain in Dart la
 version: 1.0.1
 homepage: https://github.com/VizTower/viz_dart_ecc
 authors:
-  - primes-network <primes.ntwk@gmail.com>
   - ivanzar <ivanzar.developer@gmail.com>
 
 environment:
