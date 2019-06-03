@@ -1,4 +1,4 @@
-# Elliptic curve cryptography (ECC) in Dart
+# Elliptic curve cryptography (ECC) in Dart ![Pub](https://img.shields.io/pub/v/viz_dart_ecc.svg)
 [![Build Status](https://travis-ci.com/VizTower/viz_dart_ecc.svg?branch=master)](https://travis-ci.com/VizTower/viz_dart_ecc)
 
 Elliptic curve cryptography lib for VIZ based blockchain in Dart lang. 
