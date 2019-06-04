@@ -5,10 +5,8 @@ void main() {
       '5J2XSYiA62K5s9vLsXXpj9CdoGmWUnohEWnVmg8aJb8D2TYvpbW');
 
   VIZPublicKey publicKey = privateKey.toPublicKey();
-
-  print('Pub key: ' + publicKey.toString());
-
   VIZSignature signature = privateKey.signString('data');
 
+  print('Pub key: ' + publicKey.toString());
   print('Signatured data: ' + signature.toString());
 }

@@ -1,10 +1,11 @@
 # Elliptic curve cryptography (ECC) in Dart ![Pub](https://img.shields.io/pub/v/viz_dart_ecc.svg)
 [![Build Status](https://travis-ci.com/VizTower/viz_dart_ecc.svg?branch=master)](https://travis-ci.com/VizTower/viz_dart_ecc)
 
-Elliptic curve cryptography lib for VIZ based blockchain in Dart lang. 
-Forked from [eosdart_ecc](https://github.com/primes-network/eosdart_ecc) and a lot of code is rewritten for VIZ.
+viz_dart_ecc is cryptography library for simply data encoding and decoding 
+using VIZ blockchain's ECC cryptography algorithms. 
 
-You can sign any data using VIZ cryptographic algorithms.
+Code for viz_dart_ecc was forked from [eosdart_ecc](https://github.com/primes-network/eosdart_ecc) 
+but most of it was rewritten for VIZ blockchain.
 
 ## Usage
 
@@ -18,15 +19,13 @@ void main() {
       '5J2XSYiA62K5s9vLsXXpj9CdoGmWUnohEWnVmg8aJb8D2TYvpbW');
 
   VIZPublicKey publicKey = privateKey.toPublicKey();
-
-  print('Pub key: ' + publicKey.toString());
-
   VIZSignature signature = privateKey.signString('data');
 
-  print('Signed data: ' + signature.toString());
+  print('Pub key: ' + publicKey.toString());
+  print('Signatured data: ' + signature.toString());
 }
 ```
 
 ## Features and bugs
 
-Please file feature requests and bugs at the [issue tracker](https://github.com/VizTower/viz_dart_ecc/issues).
+Please file feature requests and bugs at the [issue tracker](https://github.
