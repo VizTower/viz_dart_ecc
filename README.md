@@ -1,6 +1,8 @@
 # Elliptic curve cryptography (ECC) in Dart ![Pub](https://img.shields.io/pub/v/viz_dart_ecc.svg)
 [![Build Status](https://travis-ci.com/VizTower/viz_dart_ecc.svg?branch=master)](https://travis-ci.com/VizTower/viz_dart_ecc)
 
+[[DOC](https://pub.dev/documentation/viz_dart_ecc/latest/) | [issue tracker](https://github.com/VizTower/viz_dart_ecc/issues)]
+
 viz_dart_ecc is cryptography library for simply data encoding and decoding 
 using VIZ blockchain's ECC cryptography algorithms. 
 
@@ -28,4 +30,4 @@ void main() {
 
 ## Features and bugs
 
-Please file feature requests and bugs at the [issue tracker](https://github.
+Please file feature requests and bugs at the [issue tracker](https://github.com/VizTower/viz_dart_ecc/issues)
