@@ -12,7 +12,6 @@ dependencies:
   base58check: ^1.0.1
   pointycastle: ^1.0.1
   convert: ^2.1.1
-  crypto: ^2.0.6
 
 dev_dependencies:
   test: ^1.0.0
