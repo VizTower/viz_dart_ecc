@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:convert/convert.dart';
 import 'package:viz_dart_ecc/viz_dart_ecc.dart';
 import 'package:test/test.dart';
@@ -11,6 +13,19 @@ void main() {
 
       expect('VIZ8VmBfvDi5S2Y8pB4T5AyfZmmqGBL2jV4t5H5cZbonp1VgSWh3u',
           publicKey.toString());
+    });
+
+    test('Transform public key to buffer', () {
+      VIZPublicKey publicKey = VIZPublicKey.fromString(
+          'VIZ8VmBfvDi5S2Y8pB4T5AyfZmmqGBL2jV4t5H5cZbonp1VgSWh3u');
+      print(publicKey);
+
+      Uint8List buf = publicKey.toBuffer();
+
+      VIZPublicKey newPubKey = VIZPublicKey.fromBuffer(buf);
+
+      expect(newPubKey.toString(),
+          'VIZ8VmBfvDi5S2Y8pB4T5AyfZmmqGBL2jV4t5H5cZbonp1VgSWh3u');
     });
 
     test('Construct VIZ private key from string', () {
